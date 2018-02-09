@@ -1060,11 +1060,14 @@ ep0_read (struct file *fd, char __user *buf, size_t len, loff_t *ptr)
 				retval = -EIO;
 			else {
 				len = min (len, (size_t)dev->req->actual);
-// FIXME don't call this with the spinlock held ...
+				++dev->udc_usage;
+				spin_unlock_irq(&dev->lock);
 				if (copy_to_user (buf, dev->req->buf, len))
 					retval = -EFAULT;
 				else
 					retval = len;
+				spin_lock_irq(&dev->lock);
+				--dev->udc_usage;
 				clean_req (dev->gadget->ep0, dev->req);
 				/* NOTE userspace can't yet choose to stall */
 			}
@@ -1877,8 +1880,10 @@ dev_config (struct file *fd, const char __user *buf, size_t len, loff_t *ptr)
 
 	spin_lock_irq (&dev->lock);
 	value = -EINVAL;
-	if (dev->buf)
+	if (dev->buf) {
+		kfree(kbuf);
 		goto fail;
+	}
 	dev->buf = kbuf;
 
 	/* full or low speed config */

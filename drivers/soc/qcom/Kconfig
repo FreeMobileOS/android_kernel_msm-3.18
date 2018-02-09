@@ -500,19 +500,6 @@ config MSM_GLINK_BGCOM_XPRT
 	  allows for G-Link communication with remote subsystems that are
 	  external to the System-on-Chip.
 
-config MSM_SPCOM
-	depends on MSM_GLINK
-	bool "Secure Processor Communication over GLINK"
-	help
-	  spcom driver allows loading Secure Processor Applications and
-	  sending messages to Secure Processor Applications.
-	  spcom provides interface to both user space app and kernel driver.
-	  It is using glink as the transport layer, which provides multiple
-	  logical channels over signle physical channel.
-	  The physical layer is based on shared memory and interrupts.
-	  spcom provides clients/server API, although currently only one client
-	  or server is allowed per logical channel.
-
 config MSM_SMEM_LOGGING
 	depends on MSM_SMEM
 	bool "MSM Shared Memory Logger"
@@ -900,6 +887,11 @@ config WCD_DSP_GLINK
 	   This option enables driver which provides communication interface
 	   between MSM and WCD DSP over glink transport protocol. This driver
 	   provides read and write interface via char device.
+
+config SERIAL_NUM
+	bool "Enable Serial Number Proc Interface"
+	help
+	  Provide a interface for reading CPU serial number
 
 source "drivers/soc/qcom/memshare/Kconfig"
 

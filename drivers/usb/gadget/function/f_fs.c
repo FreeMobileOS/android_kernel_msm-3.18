@@ -866,7 +866,7 @@ retry:
 		}
 
 		if (io_data->aio) {
-			req = usb_ep_alloc_request(ep->ep, GFP_KERNEL);
+			req = usb_ep_alloc_request(ep->ep, GFP_ATOMIC);
 			if (unlikely(!req))
 				goto error_lock;
 
@@ -1716,7 +1716,7 @@ static void functionfs_unbind(struct ffs_data *ffs)
 static int ffs_epfiles_create(struct ffs_data *ffs)
 {
 	struct ffs_epfile *epfile, *epfiles;
-	unsigned i, count;
+	short i, count;
 
 	ENTER();
 
